@@ -1,0 +1,25 @@
+BAIXE OS ARQUIVOS DO SITE GEOAISWEB
+NOME | FORMATO DO ARQUIVO
+
+ICA:FIR 							| GML -> salvar como fir_sectors.xml
+ICA:TMA 							| GML -> salvar como tma.xml
+ICA:CTR 							| GML -> salvar como ctr.xml
+ICA:ATZ 							| GML -> salvar como atz.xml
+ICA:vw_aerovia_alta_v2 				| Excel
+ICA:vw_aerovia_baixa_v2 			| Excel
+ICA:airport 						| Excel
+ICA:waypoint_aisweb 				| Excel
+ICA:vor 							| Excel
+ICA:ndb 							| Excel
+
+Use os scripts em python.
+Para extrair os NDBs use: NDB_EXTRACTOR
+Para extrair os VORs use: VOR_EXTRACTOR
+Para extrair as TMAs use: TMA_EXTRACTOR
+Para extrair os CTRs use: CTR_EXTRACTOR
+Para extrair os ATZs use: ATZ_EXTRACTOR
+Para extrair os Setores de FIR use: FIR_EXTRACTOR
+Para extrair os AWY de Alta use: AWY_HIGH_EXTRACTOR
+Para extrair os AWY de Baixa use: AWY_LOW_EXTRACTOR
+Para extrair os Aeroportos use: APT_EXTRACTOR
+Para extrair os Fixos use: FIX_EXTRACTOR
