@@ -1,10 +1,10 @@
 # IVAO AURORA SECTORFILE TOOL
-DATA EXTRACTOR FROM GEOAISWEB TO FORMAT .SCT
+DATA EXTRACTOR FROM GEOAISWEB TO .SCT FORMAT
 
-NECESSARY FILES FROM GEOAISWEB
+REQUIRED FILES FROM GEOAISWEB
 https://geoaisweb.decea.mil.br/geoserver/web/wicket/bookmarkable/org.geoserver.web.demo.MapPreviewPage?0
 
-FILE namee | FORMAT AND INSTRUCTIONS
+FILE name | FORMAT AND INSTRUCTIONS
 
 ICA:FIR 							        | Download the GML -> save as: fir_sectors.xml
 ICA:TMA 							        | Download theGML -> save as tma.xml
