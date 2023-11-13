@@ -11,23 +11,25 @@ def extract_ctr_sectors(file_path, output_file_path):
         formatted_data = []
 
         for sector in sectors:
-            ident = sector.find("ICA:ident")
+            name = sector.find("ICA:nam")
             coordinates_data = sector.find("gml:coordinates")
+            related_fir = sector.find("ICA:relatedfir")
 
-            if ident and coordinates_data:
-                ident_text = ident.get_text()
+            if name and coordinates_data:
+                name_text = name.get_text()
                 coordinate_pairs = coordinates_data.get_text().split()
+                related_fir_text = f";//{related_fir.get_text()}" if related_fir else ""
                 sector_data = [
-                    f"{'T;' if i else 'T;'}{ident_text}_CTR;{lon};{lat};"
+                    f"{'T;'}CTR {name_text};{lon};{lat}{related_fir_text}"
                     for i, (lat, lon) in enumerate(
                         pair.split(",") for pair in coordinate_pairs
                     )
                 ]
-                formatted_data.append((ident_text, sector_data))
+                formatted_data.append((name_text, sector_data))
 
         formatted_data.sort(key=lambda x: x[0])
 
-        with open(output_file_path, "w") as output_file:
+        with open(output_file_path, "w", encoding="utf-8") as output_file:
             output_file.writelines(
                 "\n".join(
                     line for _, sector_data in formatted_data for line in sector_data

@@ -6,7 +6,8 @@ https://geoaisweb.decea.mil.br/geoserver/web/wicket/bookmarkable/org.geoserver.w
 
 FILE name | FORMAT AND INSTRUCTIONS
 
-ICA:FIR 							        | Download the GML -> save as: fir_sectors.xml
+ICA:FIR 							        | Download the GML -> save as: fir.xml
+ICA:CTA 							        | Download the GML -> save as: cta.xml
 ICA:TMA 							        | Download theGML -> save as tma.xml
 ICA:CTR 							        | Download theGML -> save as ctr.xml
 ICA:ATZ 							        | Download the GML -> save as atz.xml
@@ -24,6 +25,7 @@ TO EXTRACT TMAs use: TMA_EXTRACTOR
 TO EXTRACT CTRs use: CTR_EXTRACTOR
 TO EXTRACT ATZs use: ATZ_EXTRACTOR
 TO EXTRACT FIR Sectors use: FIR_EXTRACTOR
+TO EXTRACT CTA Sectors use: CTA_EXTRACTOR
 TO EXTRACT AWY High use: AWY_HIGH_EXTRACTOR
 TO EXTRACT AWY Low use: AWY_LOW_EXTRACTOR
 TO EXTRACT Airports use: APT_EXTRACTOR

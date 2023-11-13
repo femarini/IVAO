@@ -2,12 +2,12 @@ import sys
 from bs4 import BeautifulSoup
 
 
-def extract_atz_sectors(file_path, output_file_path):
+def extract_cta_sectors(file_path, output_file_path):
     try:
         with open(file_path, "r") as file:
             soup = BeautifulSoup(file.read(), "xml")
 
-        sectors = soup.find_all("ICA:ATZ")
+        sectors = soup.find_all("ICA:CTA")
         formatted_data = []
 
         for sector in sectors:
@@ -20,7 +20,7 @@ def extract_atz_sectors(file_path, output_file_path):
                 coordinate_pairs = coordinates_data.get_text().split()
                 related_fir_text = f";//{related_fir.get_text()}" if related_fir else ""
                 sector_data = [
-                    f"{'T;'}ATZ {name_text};{lon};{lat}{related_fir_text}"
+                    f"{'T;'}CTA {name_text};{lon};{lat}{related_fir_text}"
                     for i, (lat, lon) in enumerate(
                         pair.split(",") for pair in coordinate_pairs
                     )
@@ -38,7 +38,7 @@ def extract_atz_sectors(file_path, output_file_path):
             )
 
         print(
-            f"ATZ sectors extracted and sorted alphabetically and saved to {output_file_path}"
+            f"CTA sectors extracted and sorted alphabetically and saved to {output_file_path}"
         )
 
     except Exception as e:
@@ -46,4 +46,4 @@ def extract_atz_sectors(file_path, output_file_path):
 
 
 if __name__ == "__main__":
-    extract_atz_sectors("atz.xml", "atz.txt")
+    extract_cta_sectors("cta.xml", "cta.txt")
