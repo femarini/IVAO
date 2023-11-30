@@ -42,7 +42,7 @@ def extract_data(file_path, output_file, fir_filter):
         axis=1,
     ).str.cat(sep="\n")
 
-    with open(output_file, "w") as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         f.write(formatted_lines)
 
 

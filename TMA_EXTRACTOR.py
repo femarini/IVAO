@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 def extract_tma_sectors(file_path, output_file_path):
     try:
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             soup = BeautifulSoup(file.read(), "xml")
 
         sectors = soup.find_all("ICA:TMA")
