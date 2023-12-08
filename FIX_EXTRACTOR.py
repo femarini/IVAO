@@ -29,7 +29,9 @@ def get_code(tipo):
 
 # Function to format waypoint data into a DataFrame
 def format_waypoint_data(waypoints_df, section_name, exclude_waypoints=set()):
-    waypoints_df = waypoints_df[waypoints_df["tipo"].isin(extract_types)]
+    waypoints_df = waypoints_df[waypoints_df["tipo"].isin(extract_types)].sort_values(
+        by="ident"
+    )
     waypoints_df = waypoints_df[~waypoints_df["ident"].isin(exclude_waypoints)]
     formatted_lines = waypoints_df.apply(
         lambda row: f"{row['ident']};{dms_to_formatted_with_direction(row['latitude_gms'])};{dms_to_formatted_with_direction(row['longitude_gms'])};{get_code(row['tipo'])};",
@@ -45,7 +47,7 @@ def extract_en_route_waypoints(waypoint_data, aerovia_data, section_name):
     )
     filtered_waypoint_data = waypoint_data[
         waypoint_data["ident"].isin(en_route_waypoints)
-    ]
+    ].sort_values(by="ident")
     formatted_lines = filtered_waypoint_data.apply(
         lambda row: f"{row['ident']};{dms_to_formatted_with_direction(row['latitude_gms'])};{dms_to_formatted_with_direction(row['longitude_gms'])};0;",
         axis=1,
@@ -73,3 +75,5 @@ fixes_section = format_waypoint_data(
 # Write to file
 with open("fixes.txt", "w") as f:
     f.write(f"{fixes_section}{awy_section}")
+
+print("Fixes data written to fixes.txt")
