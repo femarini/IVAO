@@ -20,30 +20,37 @@ def decimal_to_dms(decimal_degrees, direction_positive, direction_negative):
 
 
 def meters_to_feet(meters_series):
-    return (meters_series * 3.28084).round()
+    return (meters_series * 3.28084).round(0)
 
 
 def extract_data(file_path, output_file, fir_filter):
     df = pd.read_excel(file_path)
 
+    # Sort data by FIR and then by localidade_id
+    df = df.sort_values(by=["fir", "localidade_id"])
+
     # Apply FIR filter based on the dictionary
     filtered_firs = {fir for fir, include in fir_filter.items() if include}
     df = df[df["fir"].isin(filtered_firs)]
 
-    df["elevacao_ft"] = meters_to_feet(df["elevacao"])
-    df["latitude_dms"] = decimal_to_dms(df["latitude_dec"], "N", "S")
-    df["longitude_dms"] = decimal_to_dms(df["longitude_dec"], "E", "W")
+    groups = df.groupby("fir")
+    formatted_lines = []
 
-    df["suffix"] = (
-        df["localidade_id"].str.startswith("SB").map({True: ";2", False: ";1"})
-    )
-    formatted_lines = df.apply(
-        lambda row: f"{row['localidade_id']};{row['elevacao_ft']};0;{row['latitude_dms']};{row['longitude_dms']};{row['nome']}{row['suffix']};",
-        axis=1,
-    ).str.cat(sep="\n")
+    for fir, group in groups:
+        group["elevacao_ft"] = meters_to_feet(group["elevacao"])
+        group["latitude_dms"] = decimal_to_dms(group["latitude_dec"], "N", "S")
+        group["longitude_dms"] = decimal_to_dms(group["longitude_dec"], "E", "W")
+        group["suffix"] = (
+            group["localidade_id"].str.startswith("SB").map({True: ";2", False: ";1"})
+        )
+        group_lines = group.apply(
+            lambda row: f"{row['localidade_id']};{row['elevacao_ft']};0;{row['latitude_dms']};{row['longitude_dms']};{row['nome']}{row['suffix']};",
+            axis=1,
+        ).str.cat(sep="\n")
+        formatted_lines.append(f"\n//FIR {fir}\n{group_lines}")
 
     with open(output_file, "w", encoding="utf-8") as f:
-        f.write(formatted_lines)
+        f.write("\n".join(formatted_lines))
 
 
 if __name__ == "__main__":
