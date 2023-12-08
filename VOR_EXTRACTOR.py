@@ -20,6 +20,9 @@ def extract_vor_data(excel_path, output_path):
     try:
         vor_data = pd.read_excel(excel_path)
 
+        # Sort data by ident (VOR identifier)
+        vor_data = vor_data.sort_values(by="ident")
+
         vor_data["frequency"] = vor_data["frequency"].map("{:.2f}".format)
         vor_data["latitude_formatted"] = format_dms(vor_data["latitude_gms"])
         vor_data["longitude_formatted"] = format_dms(vor_data["longitude_gms"])

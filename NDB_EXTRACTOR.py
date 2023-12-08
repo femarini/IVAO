@@ -20,6 +20,9 @@ def extract_ndb_data(excel_path, output_path):
     try:
         ndb_data = pd.read_excel(excel_path)
 
+        # Sort data by codeid (NDB identifier)
+        ndb_data = ndb_data.sort_values(by="codeid")
+
         ndb_data["valfreq"] = ndb_data["valfreq"].map("{:.1f}".format)
         ndb_data["latitude_formatted"] = format_dms(ndb_data["latitude_gms"])
         ndb_data["longitude_formatted"] = format_dms(ndb_data["longitude_gms"])
