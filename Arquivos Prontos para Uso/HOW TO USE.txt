@@ -1,0 +1,34 @@
+# IVAO AURORA SECTORFILE TOOL
+DATA EXTRACTOR FROM GEOAISWEB TO .SCT FORMAT
+
+REQUIRED FILES FROM GEOAISWEB
+https://geoaisweb.decea.mil.br/geoserver/web/wicket/bookmarkable/org.geoserver.web.demo.MapPreviewPage?0
+
+FILE name | FORMAT AND INSTRUCTIONS
+
+ICA:FIR 							        | Download the GML -> save as: fir.xml
+ICA:CTA 							        | Download the GML -> save as: cta.xml
+ICA:TMA 							        | Download theGML -> save as tma.xml
+ICA:CTR 							        | Download theGML -> save as ctr.xml
+ICA:ATZ 							        | Download the GML -> save as atz.xml
+ICA:vw_aerovia_alta_v2 				| Download the Excel
+ICA:vw_aerovia_baixa_v2 			| Download the Excel
+ICA:airport 						      | Download the Excel
+ICA:waypoint_aisweb 			  	| Download the Excel
+ICA:vor 						        	| Download the Excel
+ICA:ndb 						        	| Download the Excel
+
+USE FILES ABOVE WITH .PY SCRIPTS
+TO EXTRACT NDBs use: NDB_EXTRACTOR
+TO EXTRACT VORs use: VOR_EXTRACTOR
+TO EXTRACT TMAs use: TMA_EXTRACTOR
+TO EXTRACT CTRs use: CTR_EXTRACTOR
+TO EXTRACT ATZs use: ATZ_EXTRACTOR
+TO EXTRACT FIR Sectors use: FIR_EXTRACTOR
+TO EXTRACT CTA Sectors use: CTA_EXTRACTOR
+TO EXTRACT AWY High use: AWY_HIGH_EXTRACTOR
+TO EXTRACT AWY Low use: AWY_LOW_EXTRACTOR
+TO EXTRACT Airports use: APT_EXTRACTOR
+TO EXTRACT Fixes use: FIX_EXTRACTOR
+
+#Created by Fernando Marini - IVAO ID 249151
