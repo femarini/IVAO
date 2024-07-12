@@ -12,16 +12,18 @@ TO EXTRACT ATZ execute .PY and open the output file (txt).
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
-Now, to extract files below, you need to download the required files at 
+To extract other options below, you need to download the required files on geoaisweb website:
 https://geoaisweb.decea.mil.br/geoserver/web/wicket/bookmarkable/org.geoserver.web.demo.MapPreviewPage?
 
-FILE NAME | FORMAT
-ICA:vw_aerovia_alta_v2 				| Download the excel file .xls
-ICA:vw_aerovia_baixa_v2 			| Download the Excel .xls
-ICA:airport 						      | Download the Excel .xls
-ICA:waypoint_aisweb 			  	| Download the Excel .xls
-ICA:vor 						        	| Download the Excel .xls
-ICA:ndb 						        	| Download the Excel .xls
+Required Files:
+-> ICA:vw_aerovia_alta_v2.xls
+-> ICA:vw_aerovia_baixa_v2.xls
+-> ICA:airport.xls
+-> ICA:waypoint_aisweb.xls
+-> ICA:vor.xls
+-> ICA:ndb.xls
+
+Group these files with .py and execute.
 
 TO EXTRACT NDBs use: NDB_EXTRACTOR.py
 TO EXTRACT VORs use: VOR_EXTRACTOR.py
