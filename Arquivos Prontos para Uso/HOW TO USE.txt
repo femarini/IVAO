@@ -6,11 +6,11 @@ https://geoaisweb.decea.mil.br/geoserver/web/wicket/bookmarkable/org.geoserver.w
 
 FILE name | FORMAT AND INSTRUCTIONS
 
-ICA:FIR 							        | Download the GML -> save as: fir.xml
-ICA:CTA 							        | Download the GML -> save as: cta.xml
-ICA:TMA 							        | Download theGML -> save as tma.xml
-ICA:CTR 							        | Download theGML -> save as ctr.xml
-ICA:ATZ 							        | Download the GML -> save as atz.xml
+ICA:FIR 							        | Execute and open the output file (txt).
+ICA:CTA 							        | Execute and open the output file (txt).
+ICA:TMA 							        | Execute and open the output file (txt).
+ICA:CTR 							        | Execute and open the output file (txt).
+ICA:ATZ 							        | Execute and open the output file (txt).
 ICA:vw_aerovia_alta_v2 				| Download the Excel
 ICA:vw_aerovia_baixa_v2 			| Download the Excel
 ICA:airport 						      | Download the Excel
