@@ -1,16 +1,16 @@
 # IVAO AURORA SECTORFILE TOOL
-DATA EXTRACTOR FROM GEOAISWEB TO .SCT FORMAT
+DATA EXTRACTOR FROM GEOAISWEB TO .SCT FORMAT (USE ONLY FOR BRAZILIAN AIRSPACE)
 
 REQUIRED FILES FROM GEOAISWEB
 https://geoaisweb.decea.mil.br/geoserver/web/wicket/bookmarkable/org.geoserver.web.demo.MapPreviewPage?0
 
 FILE name | FORMAT AND INSTRUCTIONS
 
-ICA:FIR 							        | Execute .PY and open the output file (txt).
-ICA:CTA 							        | Execute .PY and open the output file (txt).
-ICA:TMA 							        | Execute .PY and open the output file (txt).
-ICA:CTR 							        | Execute .PY and open the output file (txt).
-ICA:ATZ 							        | Execute .PY and open the output file (txt).
+TO EXTRACT FIR execute .PY and open the output file (txt).
+TO EXTRACT CTA execute .PY and open the output file (txt).
+TO EXTRACT TMA execute .PY and open the output file (txt).
+TO EXTRACT CTR execute .PY and open the output file (txt).
+TO EXTRACT ATZ execute .PY and open the output file (txt).
 ICA:vw_aerovia_alta_v2 				| Download the Excel
 ICA:vw_aerovia_baixa_v2 			| Download the Excel
 ICA:airport 						      | Download the Excel
@@ -21,11 +21,6 @@ ICA:ndb 						        	| Download the Excel
 USE FILES ABOVE WITH .PY SCRIPTS
 TO EXTRACT NDBs use: NDB_EXTRACTOR
 TO EXTRACT VORs use: VOR_EXTRACTOR
-TO EXTRACT TMAs use: TMA_EXTRACTOR
-TO EXTRACT CTRs use: CTR_EXTRACTOR
-TO EXTRACT ATZs use: ATZ_EXTRACTOR
-TO EXTRACT FIR Sectors use: FIR_EXTRACTOR
-TO EXTRACT CTA Sectors use: CTA_EXTRACTOR
 TO EXTRACT AWY High use: AWY_HIGH_EXTRACTOR
 TO EXTRACT AWY Low use: AWY_LOW_EXTRACTOR
 TO EXTRACT Airports use: APT_EXTRACTOR
