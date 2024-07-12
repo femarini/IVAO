@@ -1,29 +1,35 @@
 # IVAO AURORA SECTORFILE TOOL
 DATA EXTRACTOR FROM GEOAISWEB TO .SCT FORMAT (USE ONLY FOR BRAZILIAN AIRSPACE)
 
-REQUIRED FILES FROM GEOAISWEB
-https://geoaisweb.decea.mil.br/geoserver/web/wicket/bookmarkable/org.geoserver.web.demo.MapPreviewPage?0
-
-FILE name | FORMAT AND INSTRUCTIONS
-
 TO EXTRACT FIR execute .PY and open the output file (txt).
 TO EXTRACT CTA execute .PY and open the output file (txt).
 TO EXTRACT TMA execute .PY and open the output file (txt).
 TO EXTRACT CTR execute .PY and open the output file (txt).
 TO EXTRACT ATZ execute .PY and open the output file (txt).
-ICA:vw_aerovia_alta_v2 				| Download the Excel
-ICA:vw_aerovia_baixa_v2 			| Download the Excel
-ICA:airport 						      | Download the Excel
-ICA:waypoint_aisweb 			  	| Download the Excel
-ICA:vor 						        	| Download the Excel
-ICA:ndb 						        	| Download the Excel
 
-USE FILES ABOVE WITH .PY SCRIPTS
-TO EXTRACT NDBs use: NDB_EXTRACTOR
-TO EXTRACT VORs use: VOR_EXTRACTOR
-TO EXTRACT AWY High use: AWY_HIGH_EXTRACTOR
-TO EXTRACT AWY Low use: AWY_LOW_EXTRACTOR
-TO EXTRACT Airports use: APT_EXTRACTOR
-TO EXTRACT Fixes use: FIX_EXTRACTOR
+**** The output files above may be located at "C:\Users\yourusername\" ****
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+Now, to extract files below, you need to download the required files at 
+https://geoaisweb.decea.mil.br/geoserver/web/wicket/bookmarkable/org.geoserver.web.demo.MapPreviewPage?
+
+FILE NAME | FORMAT
+ICA:vw_aerovia_alta_v2 				| Download the excel file .xls
+ICA:vw_aerovia_baixa_v2 			| Download the Excel .xls
+ICA:airport 						      | Download the Excel .xls
+ICA:waypoint_aisweb 			  	| Download the Excel .xls
+ICA:vor 						        	| Download the Excel .xls
+ICA:ndb 						        	| Download the Excel .xls
+
+TO EXTRACT NDBs use: NDB_EXTRACTOR.py
+TO EXTRACT VORs use: VOR_EXTRACTOR.py
+TO EXTRACT AWY High use: AWY_HIGH_EXTRACTOR.py
+TO EXTRACT AWY Low use: AWY_LOW_EXTRACTOR.py
+TO EXTRACT Airports use: APT_EXTRACTOR.py
+TO EXTRACT Fixes use: FIX_EXTRACTOR.py
+
+**** The output files above may be located at "C:\Users\yourusername\" ****
 
 #Created by Fernando Marini - IVAO ID 249151
