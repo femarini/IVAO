@@ -6,8 +6,8 @@ TO EXTRACT CTA execute .PY and open the output file (txt).
 TO EXTRACT TMA execute .PY and open the output file (txt).
 TO EXTRACT CTR execute .PY and open the output file (txt).
 TO EXTRACT ATZ execute .PY and open the output file (txt).
-TO EXTRACT APT execute .PY and open the output file (txt).
-
+TO EXTRACT APT execute .PY and open the output file (txt). (Only Airports)
+TO EXTRACT HEL execute .PY and open the output file (txt). (All Helipads + Airports)
 **** The output files above may be located at "C:\Users\yourusername\" ****
 
 --------------------------------------------------------------------------------
