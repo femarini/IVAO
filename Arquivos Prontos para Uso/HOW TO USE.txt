@@ -6,11 +6,11 @@ https://geoaisweb.decea.mil.br/geoserver/web/wicket/bookmarkable/org.geoserver.w
 
 FILE name | FORMAT AND INSTRUCTIONS
 
-ICA:FIR 							        | Execute and open the output file (txt).
-ICA:CTA 							        | Execute and open the output file (txt).
-ICA:TMA 							        | Execute and open the output file (txt).
-ICA:CTR 							        | Execute and open the output file (txt).
-ICA:ATZ 							        | Execute and open the output file (txt).
+ICA:FIR 							        | Execute .PY and open the output file (txt).
+ICA:CTA 							        | Execute .PY and open the output file (txt).
+ICA:TMA 							        | Execute .PY and open the output file (txt).
+ICA:CTR 							        | Execute .PY and open the output file (txt).
+ICA:ATZ 							        | Execute .PY and open the output file (txt).
 ICA:vw_aerovia_alta_v2 				| Download the Excel
 ICA:vw_aerovia_baixa_v2 			| Download the Excel
 ICA:airport 						      | Download the Excel
