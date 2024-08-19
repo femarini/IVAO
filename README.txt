@@ -11,6 +11,7 @@ TO EXTRACT ATZ execute .PY and open the output file (txt).
 TO EXTRACT AWY LABEL execute .PY and open the output file (txt).
 TO EXTRACT AWY execute .PY and open the output file (txt).
 TO EXTRACT FIX execute .PY and open the output file (txt).
+TO EXTRACT VOR execute .PY and open the output file (txt).
 TO EXTRACT APT execute .PY and open the output file (txt). (Airports Only)
 TO EXTRACT HEL execute .PY and open the output file (txt). (All Helipads + Airports)
 Atention: These output files above may be located at your "C:\Users\yourusername\"
