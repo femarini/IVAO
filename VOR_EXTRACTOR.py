@@ -31,7 +31,7 @@ if response.status_code == 200:
     }
 
     # Open a file to write the output
-    with open('navaid.txt', 'w') as file:
+    with open('vor.txt', 'w') as file:
         # Find all VOR elements
         for vor in root.findall('.//ICA:vor', ns):
             ident = vor.find('ICA:ident', ns).text.strip()
@@ -50,6 +50,6 @@ if response.status_code == 200:
             # Write the output to the file
             file.write(output)
 
-    print("Data has been successfully written to navaid.txt")
+    print("Data has been successfully written to vor.txt")
 else:
     print(f"Failed to retrieve data. HTTP Status code: {response.status_code}")
