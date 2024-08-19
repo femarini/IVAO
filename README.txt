@@ -8,6 +8,7 @@ TO EXTRACT CTA execute .PY and open the output file (txt).
 TO EXTRACT TMA execute .PY and open the output file (txt).
 TO EXTRACT CTR execute .PY and open the output file (txt).
 TO EXTRACT ATZ execute .PY and open the output file (txt).
+TO EXTRACT AWY execute .PY and open the output file (txt).
 TO EXTRACT APT execute .PY and open the output file (txt). (Airports Only)
 TO EXTRACT HEL execute .PY and open the output file (txt). (All Helipads + Airports)
 Atention: These output files above may be located at your "C:\Users\yourusername\"
@@ -19,8 +20,6 @@ Atention: These output files above may be located at your "C:\Users\yourusername
 Download the files here: https://geoaisweb.decea.mil.br/geoserver/web/wicket/bookmarkable/org.geoserver.web.demo.MapPreviewPage?
 
 Required Files:
--> ICA:vw_aerovia_alta_v2.xls
--> ICA:vw_aerovia_baixa_v2.xls
 -> ICA:waypoint_aisweb.xls
 -> ICA:vor.xls
 -> ICA:ndb.xls
@@ -29,8 +28,6 @@ Group these files above with scripts and execute.
 
 TO EXTRACT NDBs use: NDB_EXTRACTOR.py
 TO EXTRACT VORs use: VOR_EXTRACTOR.py
-TO EXTRACT AWY High use: AWY_HIGH_EXTRACTOR.py
-TO EXTRACT AWY Low use: AWY_LOW_EXTRACTOR.py
 TO EXTRACT Fixes use: FIX_EXTRACTOR.py
 
 Atention: These output files above may be located at your "C:\Users\yourusername\"
