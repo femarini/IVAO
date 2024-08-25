@@ -1,79 +1,59 @@
-import pandas as pd
-import re
+import requests
+import xml.etree.ElementTree as ET
+import os
 
-# Configuration dictionary for types
-extract_types = {
-    "ICAO": True,
-    "TERMINAL": True,
-    "OTHER:ADHP": True,
-    "BRG_DIST": True,
-    "DESIGNED": True,
-    "OTHER": True,
-    "COORD": True,
+# URL to the XML data
+url = "https://geoaisweb.decea.mil.br/geoserver/ICA/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ICA%3Awaypoint_aisweb"
+
+# Fetching the data from the URL
+response = requests.get(url)
+if response.status_code == 200:
+    xml_data = response.content
+else:
+    print(f"Failed to retrieve data: {response.status_code}")
+    exit()
+
+# Parse the XML data
+root = ET.fromstring(xml_data)
+
+# Define the namespace dictionary
+namespaces = {
+    'ICA': 'http://10.32.62.212/geoserver/ICA',
+    'gml': 'http://www.opengis.net/gml',
 }
 
+# Helper function to convert decimal degrees to DMS
+def decimal_to_dms(coordinate, is_latitude=True):
+    degrees = int(abs(coordinate))
+    minutes = int((abs(coordinate) - degrees) * 60)
+    seconds = (abs(coordinate) - degrees - minutes / 60) * 3600
+    direction = 'N' if coordinate >= 0 else 'S' if is_latitude else 'E' if coordinate >= 0 else 'W'
+    return f"{direction}{degrees:03d}.{minutes:02d}.{seconds:06.3f}"
 
-# Function to convert DMS to formatted string with direction and fixed format
-def dms_to_formatted_with_direction(dms_str):
-    match = re.match(r'(\d+)°(\d+)\'(\d+\.\d+)" ([NSWE])', dms_str)
-    if match:
-        degrees, minutes, seconds, direction = match.groups()
-        return f"{direction}{int(degrees):03}.{int(minutes):02}.{float(seconds):06.2f}"
-    return None
+# Extracting the ident, latitude, and longitude values
+waypoints = []
+for waypoint in root.findall('.//ICA:waypoint_aisweb', namespaces):
+    ident = waypoint.find('ICA:ident', namespaces).text
+    latitude = float(waypoint.find('ICA:latitude', namespaces).text)
+    longitude = float(waypoint.find('ICA:longitude', namespaces).text)
+    
+    # Convert latitude and longitude to DMS format
+    latitude_dms = decimal_to_dms(latitude, is_latitude=True)
+    longitude_dms = decimal_to_dms(longitude, is_latitude=False)
+    
+    # Combine ident, latitude, and longitude into the required format
+    waypoints.append(f"{ident};{latitude_dms};{longitude_dms};")
 
+# Sort waypoints alphabetically by ident
+waypoints_sorted = sorted(waypoints)
 
-# Function to get the code based on the type of waypoint
-def get_code(tipo):
-    return "1" if tipo in extract_types else "Unknown Code"
+# Define the desktop path and the output file path
+desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
+output_file = os.path.join(desktop_path, "fix.txt")
 
+# Write the sorted and formatted waypoints to fix.txt
+with open(output_file, 'w') as file:
+    for waypoint in waypoints_sorted:
+        file.write(f"{waypoint}\n")
 
-# Function to format waypoint data into a DataFrame
-def format_waypoint_data(waypoints_df, section_name, exclude_waypoints=set()):
-    waypoints_df = waypoints_df[waypoints_df["tipo"].isin(extract_types)].sort_values(
-        by="ident"
-    )
-    waypoints_df = waypoints_df[~waypoints_df["ident"].isin(exclude_waypoints)]
-    formatted_lines = waypoints_df.apply(
-        lambda row: f"{row['ident']};{dms_to_formatted_with_direction(row['latitude_gms'])};{dms_to_formatted_with_direction(row['longitude_gms'])};{get_code(row['tipo'])};",
-        axis=1,
-    )
-    return f"//{section_name}\n" + "\n".join(formatted_lines) + "\n\n"
-
-
-# Function to extract en route waypoints and format them
-def extract_en_route_waypoints(waypoint_data, aerovia_data, section_name):
-    en_route_waypoints = set(aerovia_data["from_fix_ident"]).union(
-        aerovia_data["to_fix_ident"]
-    )
-    filtered_waypoint_data = waypoint_data[
-        waypoint_data["ident"].isin(en_route_waypoints)
-    ].sort_values(by="ident")
-    formatted_lines = filtered_waypoint_data.apply(
-        lambda row: f"{row['ident']};{dms_to_formatted_with_direction(row['latitude_gms'])};{dms_to_formatted_with_direction(row['longitude_gms'])};0;",
-        axis=1,
-    )
-    return (
-        f"//{section_name}\n" + "\n".join(formatted_lines) + "\n\n",
-        en_route_waypoints,
-    )
-
-
-# Load data
-waypoint_data = pd.read_excel("waypoint_aisweb.xls")
-aerovia_data = pd.concat(
-    [pd.read_excel("vw_aerovia_alta_v2.xls"), pd.read_excel("vw_aerovia_baixa_v2.xls")]
-)
-
-# Process data
-awy_section, en_route_waypoints = extract_en_route_waypoints(
-    waypoint_data, aerovia_data, "--AIRWAY FIXES--"
-)
-fixes_section = format_waypoint_data(
-    waypoint_data, "-- TERMINAL FIXES--", en_route_waypoints
-)
-
-# Write to file
-with open("fixes.txt", "w") as f:
-    f.write(f"{fixes_section}{awy_section}")
-
-print("Fixes data written to fixes.txt")
+print(f"Data has been saved to {output_file}")
