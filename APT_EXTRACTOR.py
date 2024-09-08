@@ -14,15 +14,13 @@ def decimal_to_dms(decimal_degrees, direction_positive, direction_negative):
 def meters_to_feet(meters):
     return round(meters * 3.28084)
 
-def extract_data_from_url(url, output_file, fir_filter):
+def extract_data_from_url(url, output_file, fir_filter, tipo_util_filter):
     try:
         response = requests.get(url)
         response.raise_for_status()
         soup = BeautifulSoup(response.content, "xml")
-
         airports = soup.find_all("ICA:airport")
         data = []
-
         for airport in airports:
             try:
                 localidade_id = airport.find("ICA:localidade_id").get_text()
@@ -31,39 +29,40 @@ def extract_data_from_url(url, output_file, fir_filter):
                 longitude_dec = float(airport.find("ICA:longitude_dec").get_text())
                 nome = airport.find("ICA:nome").get_text()
                 fir = airport.find("ICA:fir").get_text()
-
-                data.append({
-                    "localidade_id": localidade_id,
-                    "elevacao": elevacao,
-                    "latitude_dec": latitude_dec,
-                    "longitude_dec": longitude_dec,
-                    "nome": nome,
-                    "fir": fir
-                })
+                tipo_util = airport.find("ICA:tipo_util").get_text()
+                
+                # Apply FIR and tipo_util filters
+                if (not fir_filter or fir in fir_filter) and tipo_util in tipo_util_filter:
+                    data.append({
+                        "localidade_id": localidade_id,
+                        "elevacao": elevacao,
+                        "latitude_dec": latitude_dec,
+                        "longitude_dec": longitude_dec,
+                        "nome": nome,
+                        "fir": fir,
+                        "tipo_util": tipo_util
+                    })
             except AttributeError:
                 # Handle missing attributes
                 continue
-
-        # Filter and sort data
-        filtered_data = [d for d in data if fir_filter.get(d["fir"], False)]
-        filtered_data.sort(key=lambda x: (x["fir"], x["localidade_id"]))
-
+        
+        # Sort data
+        data.sort(key=lambda x: (x["fir"], x["localidade_id"]))
+        
         # Process and format data
         formatted_lines = []
         current_fir = None
-        for entry in filtered_data:
+        for entry in data:
             if entry["fir"] != current_fir:
                 current_fir = entry["fir"]
                 formatted_lines.append(f"\n//FIR {current_fir}")
-
             elevacao_ft = meters_to_feet(entry["elevacao"])
             latitude_dms = decimal_to_dms(entry["latitude_dec"], "N", "S")
             longitude_dms = decimal_to_dms(entry["longitude_dec"], "E", "W")
             suffix = ";2" if entry["localidade_id"].startswith("SB") else ";1"
-
             line = f"{entry['localidade_id']};{elevacao_ft};0;{latitude_dms};{longitude_dms};{entry['nome']}{suffix};"
             formatted_lines.append(line)
-
+        
         with open(output_file, "w", encoding="utf-8") as f:
             f.write("\n".join(formatted_lines))
     except requests.RequestException as e:
@@ -74,11 +73,12 @@ def extract_data_from_url(url, output_file, fir_filter):
 if __name__ == "__main__":
     url = "https://geoaisweb.decea.mil.br/geoserver/ICA/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ICA%3Aairport"
     output_file = "airport.txt"  # The output file path
-    fir_filter = {
-        "SBCW": True,
-        "SBRE": True,
-        "SBBS": True,
-        "SBAO": True,
-        "SBAZ": True,
-    }  # FIR filter settings
-    extract_data_from_url(url, output_file, fir_filter)
+    
+    # FIR filter settings
+    # Set to None for all FIRs, or specify a set of FIRs to filter
+    fir_filter = {"SBCW", "SBBS", "SBAZ", "SBRE", "SBAO"}
+    # Uncomment the next line to include all FIRs
+    # fir_filter = None
+    
+    tipo_util_filter = {"PRIV" "PUB/MIL", "PUB", "PRIV/PUB", "MIL", "PUB/REST"}  # tipo_util filter
+    extract_data_from_url(url, output_file, fir_filter, tipo_util_filter)
