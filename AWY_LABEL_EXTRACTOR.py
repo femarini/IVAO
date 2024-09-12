@@ -91,5 +91,5 @@ airway_data.sort(key=lambda x: (x[0], x[1]))
 
 # Process the sorted airways and output to separate files
 upper_output_file = "upper_awy_label.txt"
-other_output_file = "other_awy_label.txt"
+other_output_file = "lower_awy_label.txt"
 process_airways(airway_data, upper_output_file, other_output_file)
