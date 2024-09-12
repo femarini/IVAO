@@ -11,14 +11,10 @@ def fetch_xml(url):
     return response.text
 
 def clean_xml(xml_string):
-    # Replace problematic characters
     xml_string = xml_string.replace('Â°', '°')
     xml_string = xml_string.replace('Ã§', 'ç')
     xml_string = xml_string.replace('Ã£', 'ã')
-    
-    # Remove any other non-ASCII characters
     xml_string = re.sub(r'[^\x00-\x7F]+', '', xml_string)
-    
     return xml_string
 
 def parse_xml_safely(xml_string, parser_func, *args):
@@ -50,7 +46,7 @@ def parse_waypoints(waypoint_xml):
             if len(coord_parts) == 2:
                 lon, lat = map(float, coord_parts)
                 waypoints[ident] = {
-                    'coordinates': (lat, lon),  # Note: We swap lat and lon here
+                    'coordinates': (lat, lon),
                     'used_in_airways': set()
                 }
     
@@ -77,6 +73,23 @@ def parse_airways(airway_xml, waypoints):
     
     return airways
 
+def format_coordinates(lat, lon):
+    lat_dir = 'N' if lat >= 0 else 'S'
+    lon_dir = 'E' if lon >= 0 else 'W'
+    
+    lat = abs(lat)
+    lon = abs(lon)
+    
+    lat_deg = int(lat)
+    lat_min = int((lat - lat_deg) * 60)
+    lat_sec = round(((lat - lat_deg) * 60 - lat_min) * 60, 3)
+    
+    lon_deg = int(lon)
+    lon_min = int((lon - lon_deg) * 60)
+    lon_sec = round(((lon - lon_deg) * 60 - lon_min) * 60, 3)
+    
+    return f"{lat_dir}{lat_deg:03d}.{lat_min:02d}.{lat_sec:06.3f}", f"{lon_dir}{lon_deg:03d}.{lon_min:02d}.{lon_sec:06.3f}"
+
 def main():
     waypoint_url = "https://geoaisweb.decea.mil.br/geoserver/ICA/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ICA%3Awaypoint_aisweb"
     airway_url = "https://geoaisweb.decea.mil.br/geoserver/ICA/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ICA%3Aairway"
@@ -98,7 +111,6 @@ def main():
         airways = parse_xml_safely(airway_xml, parse_airways, waypoints)
         print(f"Parsed {len(airways)} airways.")
         
-        # Categorize fixes
         fixes_in_airways = set()
         for airway, fixes in airways.items():
             fixes_in_airways.update(fixes)
@@ -106,15 +118,15 @@ def main():
         fixes_not_in_airways = set(waypoints.keys()) - fixes_in_airways
         
         with open(output_file, 'w') as f:
-            # Output fixes used in airways
             for fix in sorted(fixes_in_airways):
                 lat, lon = waypoints[fix]['coordinates']
-                f.write(f"{fix};{lat};{lon};0;0\n")
+                lat_formatted, lon_formatted = format_coordinates(lat, lon)
+                f.write(f"{fix};{lat_formatted};{lon_formatted};0;0\n")
             
-            # Output fixes not used in airways
             for fix in sorted(fixes_not_in_airways):
                 lat, lon = waypoints[fix]['coordinates']
-                f.write(f"{fix};{lat};{lon};1;0\n")
+                lat_formatted, lon_formatted = format_coordinates(lat, lon)
+                f.write(f"{fix};{lat_formatted};{lon_formatted};1;0\n")
         
         print(f"Output has been written to {output_file}")
         print(f"Total fixes: {len(waypoints)}")
