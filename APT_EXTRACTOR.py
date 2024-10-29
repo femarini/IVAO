@@ -1,3 +1,4 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 
@@ -55,16 +56,27 @@ def extract_data_from_url(url, output_file, fir_filter, tipo_util_filter):
         for entry in data:
             if entry["fir"] != current_fir:
                 current_fir = entry["fir"]
-                formatted_lines.append(f"\n//FIR {current_fir}")
-            elevacao_ft = meters_to_feet(entry["elevacao"])
-            latitude_dms = decimal_to_dms(entry["latitude_dec"], "N", "S")
-            longitude_dms = decimal_to_dms(entry["longitude_dec"], "E", "W")
-            suffix = ";2" if entry["localidade_id"].startswith("SB") else ";1"
-            line = f"{entry['localidade_id']};{elevacao_ft};0;{latitude_dms};{longitude_dms};{entry['nome']}{suffix};"
-            formatted_lines.append(line)
+                if formatted_lines:
+                    formatted_lines.append(f"//FIR {current_fir}")
+                else:
+                    formatted_lines.append(f"//FIR {current_fir}")
+            try:
+                elevacao_ft = meters_to_feet(entry["elevacao"])
+                latitude_dms = decimal_to_dms(entry["latitude_dec"], "N", "S")
+                longitude_dms = decimal_to_dms(entry["longitude_dec"], "E", "W")
+                suffix = ";2" if entry["localidade_id"].startswith("SB") else ";1"
+                line = f"{entry['localidade_id']};{elevacao_ft};0;{latitude_dms};{longitude_dms};{entry['nome']}{suffix};"
+                formatted_lines.append(line)
+            except KeyError as e:
+                print(f"Error formatting entry {entry}: Missing key {e}")
+            except Exception as e:
+                print(f"Unexpected error formatting entry {entry}: {e}")
         
-        with open(output_file, "w", encoding="utf-8") as f:
-            f.write("\n".join(formatted_lines))
+        try:
+            with open(output_file, "w", encoding="utf-8") as f:
+                f.write("\n".join(formatted_lines))
+        except IOError as e:
+            print(f"Error writing to file {output_file}: {e}")
     except requests.RequestException as e:
         print(f"Error fetching data from URL: {e}")
     except Exception as e:
@@ -72,7 +84,10 @@ def extract_data_from_url(url, output_file, fir_filter, tipo_util_filter):
 
 if __name__ == "__main__":
     url = "https://geoaisweb.decea.mil.br/geoserver/ICA/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ICA%3Aairport"
-    output_file = "airport.txt"  # The output file path
+    
+    # Set output file path to Desktop
+    desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
+    output_file = os.path.join(desktop_path, "airport.txt")
     
     # FIR filter settings
     # Set to None for all FIRs, or specify a set of FIRs to filter
