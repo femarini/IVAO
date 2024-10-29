@@ -80,5 +80,5 @@ if __name__ == "__main__":
     # Uncomment the next line to include all FIRs
     # fir_filter = None
     
-    tipo_util_filter = {"PRIV" "PUB/MIL", "PUB", "PRIV/PUB", "MIL", "PUB/REST"}  # tipo_util filter
+    tipo_util_filter = {"PRIV", "PUB/MIL", "PUB", "PRIV/PUB", "MIL", "PUB/REST"}  # tipo_util filter
     extract_data_from_url(url, output_file, fir_filter, tipo_util_filter)
