@@ -1,51 +1,17 @@
+import os
 import requests
 from bs4 import BeautifulSoup
-import math
+from geopy.distance import geodesic
+from shapely.geometry import LineString
+from collections import defaultdict
 
-def extract_atz_sectors_from_url(url, output_file_path, tolerance=0.001):
-    """Extracts ATZ sectors from a GML URL, simplifies coordinates, and saves them to a text file."""
-    def haversine(lat1, lon1, lat2, lon2):
-        # Calculate the great-circle distance between two points
-        R = 6371  # Earth radius in kilometers
-        phi1, phi2 = math.radians(lat1), math.radians(lat2)
-        dphi = math.radians(lat2 - lat1)
-        dlambda = math.radians(lon2 - lon1)
-        a = math.sin(dphi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2) ** 2
-        return 2 * R * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-
+def extract_atz_sectors_from_url(url, output_file_name, tolerance=0.001):
+    """Extracts ATZ sectors from a GML URL, simplifies coordinates, and saves them to a text file on the desktop."""
     def simplify_coordinates(coords, tolerance):
-        """Simplifies a list of coordinates using a tolerance in degrees."""
-        def perpendicular_distance(point, start, end):
-            """Calculate the perpendicular distance from `point` to the line defined by `start` and `end`."""
-            if start == end:
-                return haversine(point[0], point[1], start[0], start[1])
-            x0, y0 = point
-            x1, y1 = start
-            x2, y2 = end
-            num = abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1)
-            denom = math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2)
-            return num / denom
-
-        def rdp(points, epsilon):
-            """Ramer-Douglas-Peucker algorithm to reduce points."""
-            if len(points) < 3:
-                return points
-            start, end = points[0], points[-1]
-            max_dist = 0
-            index = 0
-            for i in range(1, len(points) - 1):
-                dist = perpendicular_distance(points[i], start, end)
-                if dist > max_dist:
-                    index = i
-                    max_dist = dist
-            if max_dist > epsilon:
-                results1 = rdp(points[:index + 1], epsilon)
-                results2 = rdp(points[index:], epsilon)
-                return results1[:-1] + results2
-            else:
-                return [start, end]
-
-        return rdp(coords, tolerance)
+        """Simplifies a list of coordinates using Shapely's simplify method."""
+        line = LineString(coords)
+        simplified_line = line.simplify(tolerance, preserve_topology=False)
+        return list(simplified_line.coords)
 
     try:
         response = requests.get(url)
@@ -53,7 +19,7 @@ def extract_atz_sectors_from_url(url, output_file_path, tolerance=0.001):
         soup = BeautifulSoup(response.content, "xml")
 
         sectors = soup.find_all("ICA:ATZ")
-        fir_sectors = {}  # Dict to group sectors by FIR
+        fir_sectors = defaultdict(list)  # Dict to group sectors by FIR
 
         for sector in sectors:
             name = sector.find("ICA:nam")
@@ -77,15 +43,20 @@ def extract_atz_sectors_from_url(url, output_file_path, tolerance=0.001):
                     for lat, lon in simplified_coordinates
                 ]
 
-                if related_fir_text in fir_sectors:
-                    fir_sectors[related_fir_text].extend(sector_data)
-                else:
-                    fir_sectors[related_fir_text] = sector_data
+                fir_sectors[related_fir_text].extend(sector_data)
+
+        # Get the user's desktop path
+        desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
+        output_file_path = os.path.join(desktop_path, output_file_name)
+
+        # Check if the desktop path is valid and writable
+        if not os.access(desktop_path, os.W_OK):
+            raise PermissionError(f"The desktop directory is not writable: {desktop_path}")
 
         # Sort sectors within each FIR and write to file
         with open(output_file_path, "w", encoding="utf-8") as output_file:
             for fir, sector_list in fir_sectors.items():
-                output_file.write(f"\n\n//FIR {fir}\n")
+                output_file.write(f"//FIR {fir}\n")
                 output_file.writelines("\n".join(sector_list) + "\n")
 
         print(f"ATZ sectors extracted, simplified, and grouped by FIR, saved to {output_file_path}")
