@@ -1,6 +1,7 @@
 import requests
 import xml.etree.ElementTree as ET
 import math
+import logging
 
 def convert_to_dms(decimal_degree):
     """Converts a decimal degree to degrees, minutes, seconds."""
@@ -56,6 +57,9 @@ def process_airways(airway_data, upper_output_file, other_output_file):
                     else:
                         other_file.write(label + '\n')
 
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+
 # URL to the WFS service
 url = "https://geoaisweb.decea.mil.br/geoserver/ICA/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ICA%3Aairway"
 
@@ -76,15 +80,28 @@ airways = root.findall('.//ICA:airway', ns)
 airway_data = []
 
 for airway in airways:
-    txtdesig = airway.find('ICA:txtdesig', ns).text
-    airwayseg = float(airway.find('ICA:airwayseg_', ns).text)
-    routedist = float(airway.find('ICA:routedis', ns).text)
-    coordinates = airway.find('.//gml:coordinates', ns).text.strip()
-    
-    coord_pairs = coordinates.split(' ')
-    coord_tuples = [(float(coord.split(',')[1]), float(coord.split(',')[0])) for coord in coord_pairs]
-    
-    airway_data.append((txtdesig, airwayseg, routedist, coord_tuples))
+    try:
+        txtdesig = airway.find('ICA:txtdesig', ns).text
+        airwayseg = float(airway.find('ICA:airwayseg_', ns).text)
+        routedist = float(airway.find('ICA:routedis', ns).text)
+        
+        coordinates_element = airway.find('.//gml:coordinates', ns)
+        if coordinates_element is None:
+            logging.warning(f"Coordinates not found for airway {txtdesig}. Skipping this entry.")
+            continue
+
+        coordinates = coordinates_element.text.strip()
+        coord_pairs = coordinates.split(' ')
+        coord_tuples = [(float(coord.split(',')[1]), float(coord.split(',')[0])) for coord in coord_pairs]
+
+        airway_data.append((txtdesig, airwayseg, routedist, coord_tuples))
+
+    except AttributeError as e:
+        logging.error(f"Error extracting airway details: {e}")
+        continue
+    except ValueError as e:
+        logging.error(f"Error converting numerical value: {e}")
+        continue
 
 # Sort by txtdesig and airwayseg_
 airway_data.sort(key=lambda x: (x[0], x[1]))
