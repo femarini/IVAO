@@ -50,6 +50,25 @@ def extract_data_from_url(url, output_file, fir_filter, tipo_util_filter):
         # Sort data
         data.sort(key=lambda x: (x["fir"], x["localidade_id"]))
         
+        # Define mapping for tipo_util to number
+        tipo_util_to_number = {
+            "PRIV": 3,
+            "PUB/MIL": 0,
+            "PUB": 0,
+            "PRIV/PUB": 3,
+            "MIL": 2,
+            "PUB/REST": 0
+        }
+
+        tipo_util_to_suffix = {
+            "PRIV": 1,
+            "PUB/MIL": 2,
+            "PUB": 2,
+            "PRIV/PUB": 2,
+            "MIL": 2,
+            "PUB/REST": 2
+        }
+
         # Process and format data
         formatted_lines = []
         current_fir = None
@@ -64,8 +83,14 @@ def extract_data_from_url(url, output_file, fir_filter, tipo_util_filter):
                 elevacao_ft = meters_to_feet(entry["elevacao"])
                 latitude_dms = decimal_to_dms(entry["latitude_dec"], "N", "S")
                 longitude_dms = decimal_to_dms(entry["longitude_dec"], "E", "W")
-                suffix = ";2" if entry["localidade_id"].startswith("SB") else ";1"
-                line = f"{entry['localidade_id']};{elevacao_ft};0;{latitude_dms};{longitude_dms};{entry['nome']}{suffix};"
+                suffix_number = tipo_util_to_suffix.get(entry["tipo_util"], 1)
+                suffix = f";{suffix_number}"
+
+                # Get the number for tipo_util
+                tipo_util_number = tipo_util_to_number.get(entry["tipo_util"], 0)
+
+                line = (f"{entry['localidade_id']};{elevacao_ft};0;"
+                        f"{latitude_dms};{longitude_dms};{entry['nome']}{suffix};{tipo_util_number};")
                 formatted_lines.append(line)
             except KeyError as e:
                 print(f"Error formatting entry {entry}: Missing key {e}")
