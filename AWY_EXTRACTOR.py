@@ -126,7 +126,11 @@ upper_airways_output = list(dict.fromkeys(upper_airways_output))
 lower_airways_output = list(dict.fromkeys(lower_airways_output))
 
 # Set output path to always save on Desktop
-output_path = os.path.join(os.path.expanduser("~"), "Desktop", "awy.txt")
+# Ensure the destination directory exists to avoid FileNotFoundError on
+# systems without a pre-created Desktop folder.
+output_dir = os.path.join(os.path.expanduser("~"), "Desktop")
+os.makedirs(output_dir, exist_ok=True)
+output_path = os.path.join(output_dir, "awy.txt")
 
 # Write the output to a file
 with open(output_path, 'w') as file:
