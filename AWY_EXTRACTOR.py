@@ -1,4 +1,5 @@
-import requests
+import urllib.request
+import urllib.error
 import xml.etree.ElementTree as ET
 import os
 import logging
@@ -26,10 +27,10 @@ def fetch_and_parse_xml(url: str) -> Optional[ET.Element]:
         ElementTree.Element: Parsed XML root element or None if an error occurred.
     """
     try:
-        response = requests.get(url)
-        response.raise_for_status()
-        return ET.fromstring(response.content)
-    except (requests.exceptions.RequestException, ET.ParseError) as e:
+        with urllib.request.urlopen(url) as response:
+            content = response.read()
+        return ET.fromstring(content)
+    except (urllib.error.URLError, ET.ParseError) as e:
         logger.error(f"Error fetching or parsing data from {url}: {e}")
         return None
 
